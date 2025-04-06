@@ -1,80 +1,121 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "../../components/ui/card";
-import { ArrowUpDown } from "lucide-react";
+import axios from "axios";
+
+interface CurrencyData {
+  [key: string]: string;
+}
 
 export const Frame = (): JSX.Element => {
-  const [amount, setAmount] = useState<string>("1000.00");
+  const [amount, setAmount] = useState<string>("1");
   const [fromCurrency, setFromCurrency] = useState<string>("USD");
   const [toCurrency, setToCurrency] = useState<string>("EUR");
+  const [exchangeRate, setExchangeRate] = useState<number>(0);
+  const [currencies, setCurrencies] = useState<CurrencyData>({});
+
+  useEffect(() => {
+    const fetchCurrencies = async () => {
+      try {
+        const response = await axios.get(
+          `https://v6.exchangerate-api.com/v6/${import.meta.env.VITE_EXCHANGE_API_KEY}/codes`
+        );
+        const currencyData: { [key: string]: string } = {};
+        response.data.supported_codes.forEach((code: string[]) => {
+          currencyData[code[0]] = code[1];
+        });
+        setCurrencies(currencyData);
+      } catch (error) {
+        console.error("Error fetching currencies:", error);
+      }
+    };
+
+    fetchCurrencies();
+  }, []);
+
+  useEffect(() => {
+    const fetchExchangeRate = async () => {
+      try {
+        const response = await axios.get(
+          `https://v6.exchangerate-api.com/v6/${import.meta.env.VITE_EXCHANGE_API_KEY}/pair/${fromCurrency}/${toCurrency}`
+        );
+        setExchangeRate(response.data.conversion_rate);
+      } catch (error) {
+        console.error("Error fetching exchange rate:", error);
+      }
+    };
+
+    if (fromCurrency && toCurrency) {
+      fetchExchangeRate();
+    }
+  }, [fromCurrency, toCurrency]);
+
+  const convertedAmount = (Number(amount) * exchangeRate).toFixed(2);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#030712] p-4">
-      <Card className="w-full max-w-[997px] bg-[#111827] p-8 text-white">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold">Currency Converter</h1>
-          <p className="mt-2 text-gray-400">Check live foreign currency exchange rates</p>
-        </div>
+    <main className="flex items-center justify-center min-h-screen bg-[#030712]">
+      <Card className="w-[997px] h-[1129px] bg-[#111827] rounded-[32px] flex flex-col items-center pt-[120px]">
+        <div className="w-[858px] flex flex-col items-center">
+          <h1 className="text-[64px] font-bold text-white mb-16 text-center leading-[72px]">
+            SG CURRENCY CONVERTER
+          </h1>
+          
+          <div className="w-full">
+            <div className="flex gap-8">
+              <div className="flex-1">
+                <label className="block text-[20px] font-medium text-[#E5E7EB] mb-4">
+                  Amount
+                </label>
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  className="w-full h-[72px] bg-[#1F2937] text-white text-[20px] rounded-lg px-6 border-2 border-[#374151] focus:border-[#6366F1] focus:outline-none transition-colors"
+                  min="0"
+                  placeholder="Enter amount"
+                />
+              </div>
 
-        <div className="grid gap-6">
-          <div className="grid gap-4">
-            <label className="text-sm text-gray-400">Amount</label>
-            <input
-              type="text"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="w-full rounded-lg bg-[#1F2937] p-4 text-xl text-white outline-none"
-            />
-          </div>
+              <div className="flex-1">
+                <label className="block text-[20px] font-medium text-[#E5E7EB] mb-4">
+                  From
+                </label>
+                <select
+                  value={fromCurrency}
+                  onChange={(e) => setFromCurrency(e.target.value)}
+                  className="w-full h-[72px] bg-[#1F2937] text-white text-[20px] rounded-lg px-6 border-2 border-[#374151] focus:border-[#6366F1] focus:outline-none appearance-none transition-colors cursor-pointer"
+                >
+                  {Object.entries(currencies).map(([code, name]) => (
+                    <option key={code} value={code} className="bg-[#1F2937]">
+                      {code} - {name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          <div className="grid grid-cols-[1fr,auto,1fr] items-center gap-4">
-            <div className="grid gap-4">
-              <label className="text-sm text-gray-400">From</label>
-              <select
-                value={fromCurrency}
-                onChange={(e) => setFromCurrency(e.target.value)}
-                className="w-full rounded-lg bg-[#1F2937] p-4 text-xl text-white outline-none"
-              >
-                <option value="USD">USD - US Dollar</option>
-                <option value="EUR">EUR - Euro</option>
-                <option value="GBP">GBP - British Pound</option>
-              </select>
+              <div className="flex-1">
+                <label className="block text-[20px] font-medium text-[#E5E7EB] mb-4">
+                  To
+                </label>
+                <select
+                  value={toCurrency}
+                  onChange={(e) => setToCurrency(e.target.value)}
+                  className="w-full h-[72px] bg-[#1F2937] text-white text-[20px] rounded-lg px-6 border-2 border-[#374151] focus:border-[#6366F1] focus:outline-none appearance-none transition-colors cursor-pointer"
+                >
+                  {Object.entries(currencies).map(([code, name]) => (
+                    <option key={code} value={code} className="bg-[#1F2937]">
+                      {code} - {name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            <button
-              onClick={() => {
-                const temp = fromCurrency;
-                setFromCurrency(toCurrency);
-                setToCurrency(temp);
-              }}
-              className="mt-6 rounded-full bg-[#1F2937] p-3 hover:bg-[#374151]"
-            >
-              <ArrowUpDown className="h-6 w-6" />
-            </button>
-
-            <div className="grid gap-4">
-              <label className="text-sm text-gray-400">To</label>
-              <select
-                value={toCurrency}
-                onChange={(e) => setToCurrency(e.target.value)}
-                className="w-full rounded-lg bg-[#1F2937] p-4 text-xl text-white outline-none"
-              >
-                <option value="EUR">EUR - Euro</option>
-                <option value="USD">USD - US Dollar</option>
-                <option value="GBP">GBP - British Pound</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <div className="rounded-lg bg-[#1F2937] p-6">
-              <div className="text-sm text-gray-400">
-                {amount} {fromCurrency} equals
+            <div className="mt-12 p-8 bg-[#1F2937] rounded-lg border-2 border-[#374151]">
+              <div className="text-[32px] font-medium text-center text-white">
+                {amount} {fromCurrency} = {convertedAmount} {toCurrency}
               </div>
-              <div className="mt-2 text-4xl font-bold">
-                {(parseFloat(amount) * 0.92).toFixed(2)} {toCurrency}
-              </div>
-              <div className="mt-4 text-sm text-gray-400">
-                1 {fromCurrency} = {0.92} {toCurrency}
+              <div className="text-[20px] text-center text-[#9CA3AF] mt-4">
+                1 {fromCurrency} = {exchangeRate.toFixed(6)} {toCurrency}
               </div>
             </div>
           </div>
