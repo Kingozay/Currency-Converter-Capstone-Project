@@ -1,50 +1,62 @@
-Project Title: Currency Converter Web App
+# Currency Converter Web App
 
-Project Overview: The Currency Converter Web App will allow users to convert values between different currencies using real-time exchange rates. This project will reinforce API integration, user interface design, and responsive development with Tailwi
+## Overview
+The **Currency Converter Web App** is a simple yet powerful tool that allows users to convert values between different currencies using real-time exchange rates. The application is built with **React.js** and styled with **Tailwind CSS**, ensuring a modern, responsive, and user-friendly interface.
 
+## Features
+- 🌎 **Real-Time Exchange Rates**: Fetches up-to-date currency exchange rates from the ExchangeRate-API.
+- 🔄 **Currency Conversion**: Users can select two currencies and input an amount to get the converted value.
+- 📊 **Exchange Rate Display**: Shows the current exchange rate between selected currency pairs.
+- 📆 **Historical Data (Future Enhancement)**: Displays past exchange rate search history.
+- 📰 **Financial News (Future Enhancement)**: Integrates a section with financial news updates.
+- 🎨 **Dark/Light Mode**: Allows users to switch between dark and light themes for better user experience.
+- 📱 **Fully Responsive**: Works seamlessly on mobile, tablet, and desktop devices.
 
-1. Project Idea
+## Tech Stack
+- **Frontend**: React.js, Tailwind CSS
+- **API**: ExchangeRate-API (or an alternative like Open Exchange Rates or CurrencyLayer)
+- **State Management**: React Hooks (useState, useEffect)
+- **Deployment**: Netlify / Vercel
 
-A simple web application that enables users to select two currencies, enter an amount, and get the converted value based on real-time exchange rates.
+```
 
-2. Main Features
+## Installation & Setup
+### 1. Clone the Repository
+```sh
+git clone https://github.com/Kingozay/Currency-Converter-Capstone-Project.git
+cd Currency-Converter-Capstone-Project
+```
 
-Fetch real-time exchange rates from a public API.
+### 2. Install Dependencies
+```sh
+yarn install  # or npm install
+```
 
-Allow users to select currencies from a dropdown menu.
+### 3. Get API Key
+Sign up at [ExchangeRate-API](https://www.exchangerate-api.com/) and get your free API key. Create a `.env` file in the root folder and add:
+```sh
+REACT_APP_API_KEY=your_api_key_here
+```
 
-Enable users to input an amount for conversion.
+### 4. Start Development Server
+```sh
+yarn dev  # or npm start
+```
 
-Display the converted amount dynamically.
+## Deployment
+To deploy the app on **Netlify** or **Vercel**, follow these steps:
+1. Create an account on [Netlify](https://www.netlify.com/) or [Vercel](https://vercel.com/).
+2. Link your GitHub repository.
+3. Deploy the site using default settings.
+4. Add environment variables for the API key in the deployment settings.
 
-Ensure a user-friendly interface with Tailwind CSS.
+## Contributing
+Feel free to fork this repository and submit pull requests. Contributions are always welcome! 🚀
 
-Make the application mobile-responsive.
+## License
+This project is licensed under the **MIT License**.
 
-Deploy the project on Netlify or Vercel.
-
-3. API Selection
-
-API Name: ExchangeRate-API (or an alternative like Open Exchange Rates or CurrencyLayer).
-
-Usage: The API provides real-time exchange rates for multiple currencies, which will be used for calculations.
-
-Documentation Link: https://www.exchangerate-api.com/
-
-4. Project Structure & Components
-
-Pages & Components:
-
-Main Page: The app will be a single-page application (SPA) displaying the conversion interface.
-
-Components:
-
-CurrencySelector (Dropdowns for selecting currencies)
-
-AmountInput (User input field for entering amount)
-
-ConvertButton (Button to trigger conversion)
-
-ResultDisplay (Area to display the converted amount)
-
-Footer (Basic project information and credits)
+## Contact
+👤 **Goodluck Oluwaseun**  
+📧 Email: goodluck98seun@gmail.com  
+🔗 GitHub: [Kingozay](https://github.com/Kingozay)  
